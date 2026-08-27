@@ -1,0 +1,25 @@
+.mangel-card {
+  background: var(--card-bg);
+  border: 0.5px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.mangel-card__name {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text);
+  margin: 0;
+}
+
+.mangel-card__meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 2px 0 0;
+}

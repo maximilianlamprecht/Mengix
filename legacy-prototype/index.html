@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MieterApp – Prototyp</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f0f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:40px 16px;}
+.header{text-align:center;margin-bottom:32px;}
+.header h1{font-size:22px;font-weight:600;color:#111;margin-bottom:6px;}
+.header p{font-size:14px;color:#666;}
+.badge{display:inline-block;background:#e8f5ee;color:#0F6E56;font-size:12px;padding:4px 12px;border-radius:20px;margin-top:8px;font-weight:500;}
+.phone-wrap{display:flex;justify-content:center;}
+.phone{width:375px;height:780px;background:#ffffff;border:1.5px solid #ddd;border-radius:44px;overflow:hidden;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.15);}
+.screen{position:absolute;inset:0;background:#ffffff;display:none;flex-direction:column;overflow:hidden;}
+.screen.on{display:flex;}
+.sb{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;}
+.sb-t{font-size:13px;font-weight:600;color:#111;}
+.sb-r{display:flex;gap:5px;align-items:flex-end;}
+.bar{width:3px;background:#111;border-radius:1px;}
+.content{flex:1;overflow-y:auto;padding:0 22px 20px;}
+.topbar{padding:4px 22px 0;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.back-btn{background:none;border:none;cursor:pointer;padding:0;color:#111;display:flex;align-items:center;}
+.nb{height:76px;border-top:0.5px solid #eee;display:flex;align-items:center;justify-content:space-around;padding:0 16px 12px;flex-shrink:0;background:#fff;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.nd{width:4px;height:4px;border-radius:50%;}
+.prog{display:flex;gap:6px;padding:10px 22px;flex-shrink:0;}
+.ps{flex:1;height:3px;border-radius:2px;}
+.card{background:#fff;border:0.5px solid #e5e5e5;border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer;}
+.bopen{background:#FCEBEB;color:#A32D2D;font-size:11px;padding:3px 10px;border-radius:20px;white-space:nowrap;font-weight:500;}
+.bprog{background:#FAEEDA;color:#854F0B;font-size:11px;padding:3px 10px;border-radius:20px;white-space:nowrap;font-weight:500;}
+.bdone{background:#EAF3DE;color:#3B6D11;font-size:11px;padding:3px 10px;border-radius:20px;white-space:nowrap;font-weight:500;}
+.btn-p{background:#0F6E56;color:white;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:500;width:100%;cursor:pointer;}
+.btn-s{background:#f5f5f5;color:#111;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:500;width:100%;cursor:pointer;margin-top:10px;}
+.chip{background:#f5f5f5;padding:8px 14px;border-radius:20px;font-size:12px;cursor:pointer;border:0.5px solid #e5e5e5;white-space:nowrap;color:#111;}
+.chip.sel{background:#0F6E56;color:white;border-color:#0F6E56;}
+.room-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.room{background:#fff;border:0.5px solid #e5e5e5;border-radius:12px;padding:14px;text-align:center;cursor:pointer;font-size:13px;color:#111;}
+.room.sel{background:#0F6E56;color:white;border-color:#0F6E56;}
+.tl-item{display:flex;gap:14px;margin-bottom:18px;}
+.tl-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.tl-line{width:0;border-left:1.5px solid #eee;height:28px;margin-left:6px;margin-bottom:-10px;}
+input,textarea{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+.footer{text-align:center;margin-top:28px;color:#aaa;font-size:12px;}
+.nav-label{font-size:11px;color:#aaa;margin-top:2px;}
+.nav-label.active{color:#0F6E56;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>MieterApp</h1>
+  <p>Klickbarer Prototyp · MVP</p>
+  <span class="badge">Zum Durchklicken</span>
+</div>
+
+<div class="phone-wrap">
+<div class="phone">
+
+<!-- HOME -->
+<div class="screen on" id="s-home">
+  <div class="sb"><span class="sb-t">9:41</span><div class="sb-r"><div class="bar" style="height:8px;"></div><div class="bar" style="height:11px;"></div><div class="bar" style="height:14px;"></div></div></div>
+  <div class="content" style="padding-top:8px;">
+    <div style="padding-bottom:18px;">
+      <p style="font-size:12px;color:#888;">Guten Morgen</p>
+      <p style="font-size:22px;font-weight:600;margin-top:2px;color:#111;">Max Müller</p>
+    </div>
+    <div style="background:#0F6E56;border-radius:20px;padding:20px;color:white;margin-bottom:18px;">
+      <p style="font-size:11px;opacity:.75;margin-bottom:3px;">Meine Wohnung</p>
+      <p style="font-size:17px;font-weight:600;">Hauptstraße 12, Wien</p>
+      <p style="font-size:13px;opacity:.75;margin-bottom:16px;">Top 4 · 1010 Wien</p>
+      <div style="display:flex;border-top:1px solid rgba(255,255,255,.2);padding-top:14px;">
+        <div style="flex:1;text-align:center;"><p id="home-offen" style="font-size:22px;font-weight:600;">2</p><p style="font-size:11px;opacity:.7;margin-top:2px;">Offen</p></div>
+        <div style="width:1px;background:rgba(255,255,255,.2);"></div>
+        <div style="flex:1;text-align:center;"><p style="font-size:22px;font-weight:600;">1</p><p style="font-size:11px;opacity:.7;margin-top:2px;">In Bearbeitung</p></div>
+        <div style="width:1px;background:rgba(255,255,255,.2);"></div>
+        <div style="flex:1;text-align:center;"><p style="font-size:22px;font-weight:600;">3</p><p style="font-size:11px;opacity:.7;margin-top:2px;">Erledigt</p></div>
+      </div>
+    </div>
+    <button class="btn-p" onclick="go('s-r1')" style="margin-bottom:18px;">+ Mangel melden</button>
+    <p style="font-size:12px;color:#888;font-weight:500;margin-bottom:10px;">Letzte Aktivität</p>
+    <div id="home-activity">
+    </div>
+  </div>
+  <div class="nb">
+    <div class="ni"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round"/><path d="M9 22V12h6v10" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round"/></svg><div class="nd" style="background:#0F6E56;"></div></div>
+    <div class="ni" onclick="go('s-list')"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#bbb" stroke-width="1.5"/><path d="M7 8h10M7 12h10M7 16h6" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/></svg><div class="nd" style="background:transparent;"></div></div>
+    <div class="ni"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="#bbb" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/></svg><div class="nd" style="background:transparent;"></div></div>
+  </div>
+</div>
+
+<!-- MÄNGELLISTE -->
+<div class="screen" id="s-list">
+  <div class="sb"><span class="sb-t">9:41</span></div>
+  <div style="padding:4px 22px 0;flex-shrink:0;">
+    <p style="font-size:22px;font-weight:600;margin-bottom:12px;color:#111;">Meine Mängel</p>
+    <div style="display:flex;gap:7px;overflow-x:auto;padding-bottom:12px;">
+      <span class="chip sel">Alle</span>
+      <span class="chip">Offen</span>
+      <span class="chip">In Bearbeitung</span>
+      <span class="chip">Erledigt</span>
+    </div>
+  </div>
+  <div class="content" style="padding-top:4px;">
+    <div id="mangel-cards"></div>
+  </div>
+  <div class="nb">
+    <div class="ni" onclick="go('s-home')"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/><path d="M9 22V12h6v10" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/></svg><div class="nd" style="background:transparent;"></div></div>
+    <div class="ni"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#0F6E56" stroke-width="1.5"/><path d="M7 8h10M7 12h10M7 16h6" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round"/></svg><div class="nd" style="background:#0F6E56;"></div></div>
+    <div class="ni"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="#bbb" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/></svg><div class="nd" style="background:transparent;"></div></div>
+  </div>
+</div>
+
+<!-- REPORT STEP 1 -->
+<div class="screen" id="s-r1">
+  <div class="sb"><span class="sb-t">9:41</span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('s-home')"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><p style="font-size:15px;font-weight:500;color:#111;">Mangel melden</p></div>
+  <div class="prog"><div class="ps" style="background:#0F6E56;"></div><div class="ps" style="background:#e5e5e5;"></div><div class="ps" style="background:#e5e5e5;"></div><div class="ps" style="background:#e5e5e5;"></div></div>
+  <div class="content" style="padding-top:8px;">
+    <p style="font-size:12px;color:#888;margin-bottom:3px;">Schritt 1 von 4</p>
+    <p style="font-size:19px;font-weight:600;margin-bottom:6px;color:#111;">Wie heißt der Mangel?</p>
+    <p style="font-size:13px;color:#888;margin-bottom:20px;">Gib dem Mangel einen kurzen, beschreibenden Namen.</p>
+    <input id="mangel-name" type="text" placeholder="z.B. Wasserhahn tropft …" style="width:100%;padding:14px 16px;border:1.5px solid #0F6E56;border-radius:13px;font-size:15px;background:#fff;color:#111;outline:none;margin-bottom:20px;">
+    <p style="font-size:12px;color:#888;margin-bottom:10px;font-weight:500;">Häufige Mängel</p>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:28px;">
+      <span class="chip" onclick="fillChip(this)">Heizung defekt</span>
+      <span class="chip" onclick="fillChip(this)">Schimmel</span>
+      <span class="chip" onclick="fillChip(this)">Fenster defekt</span>
+      <span class="chip" onclick="fillChip(this)">Steckdose</span>
+      <span class="chip" onclick="fillChip(this)">Türschloss</span>
+    </div>
+    <button class="btn-p" onclick="goR2()">Weiter</button>
+  </div>
+</div>
+
+<!-- REPORT STEP 2 -->
+<div class="screen" id="s-r2">
+  <div class="sb"><span class="sb-t">9:41</span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('s-r1')"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><p style="font-size:15px;font-weight:500;color:#111;">Mangel melden</p></div>
+  <div class="prog"><div class="ps" style="background:#0F6E56;"></div><div class="ps" style="background:#0F6E56;"></div><div class="ps" style="background:#e5e5e5;"></div><div class="ps" style="background:#e5e5e5;"></div></div>
+  <div class="content" style="padding-top:8px;">
+    <p style="font-size:12px;color:#888;margin-bottom:3px;">Schritt 2 von 4</p>
+    <p style="font-size:19px;font-weight:600;margin-bottom:6px;color:#111;">Wo ist der Mangel?</p>
+    <p style="font-size:13px;color:#888;margin-bottom:18px;">Wähle den Raum aus deinem Grundriss.</p>
+    <div style="background:#f8f8f8;border-radius:16px;padding:16px;margin-bottom:18px;">
+      <p style="font-size:11px;color:#bbb;text-align:center;margin-bottom:12px;">Grundriss — tippe auf einen Raum</p>
+      <div class="room-grid">
+        <div class="room sel" id="r-bad" onclick="selRoom('bad')">Badezimmer</div>
+        <div class="room" id="r-kue" onclick="selRoom('kue')">Küche</div>
+        <div class="room" id="r-wohn" onclick="selRoom('wohn')">Wohnzimmer</div>
+        <div class="room" id="r-schlaf" onclick="selRoom('schlaf')">Schlafzimmer</div>
+        <div class="room" id="r-flur" onclick="selRoom('flur')" style="grid-column:span 2;">Flur</div>
+      </div>
+    </div>
+    <button class="btn-p" onclick="go('s-r3')">Weiter</button>
+  </div>
+</div>
+
+<!-- REPORT STEP 3 -->
+<div class="screen" id="s-r3">
+  <div class="sb"><span class="sb-t">9:41</span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('s-r2')"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><p style="font-size:15px;font-weight:500;color:#111;">Mangel melden</p></div>
+  <div class="prog"><div class="ps" style="background:#0F6E56;"></div><div class="ps" style="background:#0F6E56;"></div><div class="ps" style="background:#0F6E56;"></div><div class="ps" style="background:#e5e5e5;"></div></div>
+  <div class="content" style="padding-top:8px;">
+    <p style="font-size:12px;color:#888;margin-bottom:3px;">Schritt 3 von 4</p>
+    <p style="font-size:19px;font-weight:600;margin-bottom:6px;color:#111;">Foto hinzufügen</p>
+    <p style="font-size:13px;color:#888;margin-bottom:18px;">Ein Foto hilft dem Vermieter, den Mangel einzuschätzen.</p>
+    <input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none;" onchange="handlePhoto(this)">
+    <div id="upload-box" style="border:1.5px dashed #ccc;border-radius:16px;padding:40px;text-align:center;margin-bottom:14px;cursor:pointer;" onclick="document.getElementById('photo-input').click()">
+      <div style="width:48px;height:48px;background:#f5f5f5;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" stroke="#888" stroke-width="1.5"/><circle cx="12" cy="13" r="4" stroke="#888" stroke-width="1.5"/></svg>
+      </div>
+      <p style="font-size:14px;font-weight:500;margin-bottom:4px;color:#111;">Foto aufnehmen</p>
+      <p style="font-size:12px;color:#888;">oder aus Galerie wählen</p>
+    </div>
+    <div id="photo-added" style="display:none;border-radius:14px;overflow:hidden;margin-bottom:14px;">
+      <img id="photo-preview" style="width:100%;max-height:180px;object-fit:cover;border-radius:14px 14px 0 0;display:block;">
+      <div style="background:#EAF3DE;padding:12px 14px;display:flex;align-items:center;gap:12px;">
+        <div style="width:28px;height:28px;background:#639922;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><p id="photo-name" style="font-size:13px;font-weight:500;color:#3B6D11;"></p><p id="photo-size" style="font-size:11px;color:#639922;"></p></div>
+      </div>
+    </div>
+    <button class="btn-p" onclick="goR4()">Weiter</button>
+  </div>
+</div>
+
+<!-- REPORT STEP 4 -->
+<div class="screen" id="s-r4">
+  <div class="sb"><span class="sb-t">9:41</span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('s-r3')"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><p style="font-size:15px;font-weight:500;color:#111;">Mangel melden</p></div>
+  <div class="prog"><div class="ps" style="background:#0F6E56;"></div><div class="ps" style="background:#0F6E56;"></div><div class="ps" style="background:#0F6E56;"></div><div class="ps" style="background:#0F6E56;"></div></div>
+  <div class="content" style="padding-top:8px;">
+    <p style="font-size:12px;color:#888;margin-bottom:3px;">Schritt 4 von 4</p>
+    <p style="font-size:19px;font-weight:600;margin-bottom:6px;color:#111;">Beschreibung</p>
+    <p style="font-size:13px;color:#888;margin-bottom:16px;">Beschreibe kurz, was nicht stimmt und seit wann.</p>
+    <textarea id="mangel-desc" placeholder="Beschreibe kurz was nicht stimmt und seit wann …" style="width:100%;padding:14px;border:0.5px solid #ddd;border-radius:13px;font-size:14px;background:#fff;color:#111;outline:none;height:100px;resize:none;margin-bottom:16px;"></textarea>
+    <div style="background:#f8f8f8;border-radius:14px;padding:16px;margin-bottom:20px;">
+      <p style="font-size:12px;color:#888;margin-bottom:10px;font-weight:500;">Zusammenfassung</p>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;color:#888;">Mangel</span><span id="sum-name" style="font-size:13px;font-weight:500;color:#111;">–</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;color:#888;">Raum</span><span id="sum-room" style="font-size:13px;font-weight:500;color:#111;">–</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;color:#888;">Foto</span><span id="sum-photo" style="font-size:13px;font-weight:500;color:#111;">–</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="font-size:13px;color:#888;">Gesendet via</span><span style="font-size:13px;font-weight:500;color:#111;">E-Mail &amp; WhatsApp</span></div>
+    </div>
+    <button class="btn-p" onclick="sendMangel()">Mangel senden</button>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="screen" id="s-success">
+  <div class="sb"><span class="sb-t">9:41</span></div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px;text-align:center;">
+    <div style="width:76px;height:76px;background:#EAF3DE;border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;"><svg width="36" height="36" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#3B6D11" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <p style="font-size:21px;font-weight:600;margin-bottom:10px;color:#111;">Mangel gesendet!</p>
+    <p style="font-size:14px;color:#888;margin-bottom:6px;">Dein Vermieter wurde sofort benachrichtigt.</p>
+    <p style="font-size:13px;color:#aaa;margin-bottom:30px;">Du siehst den Status in Echtzeit.</p>
+    <div style="background:#f8f8f8;border-radius:16px;padding:16px;width:100%;margin-bottom:26px;text-align:left;">
+      <p style="font-size:12px;color:#888;margin-bottom:12px;font-weight:500;">Gesendet an</p>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div style="width:32px;height:32px;background:#25D366;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.21 12.21 0 00-.49-.014c-.17 0-.445.064-.678.31-.232.245-.887.867-.887 2.11s.908 2.444 1.034 2.613c.127.17 1.788 2.73 4.332 3.829.605.261 1.078.418 1.446.537.608.194 1.16.166 1.598.1.488-.073 1.503-.614 1.715-1.208.213-.593.213-1.102.149-1.208-.064-.106-.232-.17-.49-.298z"/><path d="M12.004 2C6.48 2 2 6.48 2 12c0 1.854.505 3.586 1.382 5.078L2 22l5.082-1.357A9.978 9.978 0 0012.004 22C17.524 22 22 17.52 22 12S17.524 2 12.004 2z"/></svg>
+        </div>
+        <span style="font-size:13px;color:#111;">+43 660 123 4567</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:32px;height:32px;background:#E6F1FB;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#185FA5" stroke-width="1.5"/><polyline points="22,6 12,13 2,6" stroke="#185FA5" stroke-width="1.5"/></svg></div>
+        <span style="font-size:13px;color:#111;">vermieter@email.at</span>
+      </div>
+    </div>
+    <button class="btn-p" onclick="showDetail(0)">Status verfolgen</button>
+    <button class="btn-s" onclick="go('s-home')">Zurück zur Übersicht</button>
+  </div>
+</div>
+
+<!-- DETAIL + TIMELINE -->
+<div class="screen" id="s-detail">
+  <div class="sb"><span class="sb-t">9:41</span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('s-list')"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><p style="font-size:15px;font-weight:500;color:#111;">Mangeldetails</p></div>
+  <div class="content" style="padding-top:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+      <div><p id="detail-title" style="font-size:20px;font-weight:600;color:#111;">Wasserhahn tropft</p><p id="detail-room" style="font-size:13px;color:#888;margin-top:3px;">Badezimmer · 26. Apr 2026</p></div>
+      <span id="detail-status" class="bprog">In Bearbeitung</span>
+    </div>
+    <div id="detail-photo" style="margin-bottom:14px;">
+      <div style="background:#f8f8f8;border-radius:14px;height:140px;display:flex;align-items:center;justify-content:center;">
+        <svg width="38" height="38" fill="none" viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" stroke="#ccc" stroke-width="1.5"/><circle cx="12" cy="13" r="4" stroke="#ccc" stroke-width="1.5"/></svg>
+      </div>
+    </div>
+    <div style="background:#f8f8f8;border-radius:14px;padding:14px;margin-bottom:20px;">
+      <p style="font-size:12px;color:#888;margin-bottom:6px;font-weight:500;">Beschreibung</p>
+      <p id="detail-desc" style="font-size:13px;line-height:1.6;color:#111;">Der Wasserhahn im Badezimmer tropft seit gestern deutlich hörbar.</p>
+    </div>
+    <p style="font-size:14px;font-weight:600;margin-bottom:14px;color:#111;">Status-Verlauf</p>
+    <div style="padding-left:8px;">
+      <div class="tl-item">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div class="tl-dot" style="background:#0F6E56;"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div style="padding-bottom:8px;">
+          <p style="font-size:13px;font-weight:500;color:#111;">Mangel gemeldet</p>
+          <p style="font-size:11px;color:#888;margin-top:2px;">26. Apr · 09:41</p>
+          <p style="font-size:12px;color:#888;margin-top:4px;">Vermieter per E-Mail &amp; WhatsApp benachrichtigt.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div class="tl-dot" style="background:#0F6E56;"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div style="padding-bottom:8px;">
+          <p style="font-size:13px;font-weight:500;color:#111;">In Bearbeitung</p>
+          <p style="font-size:11px;color:#888;margin-top:2px;">27. Apr · 14:22</p>
+          <p style="font-size:12px;color:#888;margin-top:4px;">Vermieter hat den Status aktualisiert.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div style="flex-shrink:0;"><div class="tl-dot" style="background:#fff;border:1.5px solid #ddd;"></div></div>
+        <div><p style="font-size:13px;color:#aaa;">Erledigt</p><p style="font-size:11px;color:#ccc;margin-top:2px;">Ausstehend</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="nb">
+    <div class="ni" onclick="go('s-home')"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/><path d="M9 22V12h6v10" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/></svg><div class="nd" style="background:transparent;"></div></div>
+    <div class="ni" onclick="go('s-list')"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#0F6E56" stroke-width="1.5"/><path d="M7 8h10M7 12h10M7 16h6" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round"/></svg><div class="nd" style="background:#0F6E56;"></div></div>
+    <div class="ni"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="#bbb" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/></svg><div class="nd" style="background:transparent;"></div></div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<div class="footer">
+  MieterApp MVP · Klickbarer Prototyp<br>
+  Erstellt für Kundengespräche · Nicht für Produktion
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────
+var state = { name:'', room:'Badezimmer', roomKey:'bad', photo:false, photoName:'', photoDataUrl:'' };
+
+var mangelList = [
+  { name:'Wasserhahn tropft', room:'Badezimmer', datum:'26. Apr 2026', status:'bprog', statusText:'In Bearbeitung', desc:'Der Wasserhahn im Badezimmer tropft seit gestern deutlich hörbar.', photo:null },
+  { name:'Heizung defekt',    room:'Wohnzimmer',  datum:'23. Apr 2026', status:'bopen', statusText:'Offen', desc:'', photo:null },
+  { name:'Schimmel an der Wand', room:'Schlafzimmer', datum:'18. Apr 2026', status:'bopen', statusText:'Offen', desc:'', photo:null },
+  { name:'Steckdose defekt',  room:'Küche',       datum:'10. Apr 2026', status:'bdone', statusText:'Erledigt', desc:'', photo:null },
+  { name:'Türschloss klemmt', room:'Eingangstür', datum:'28. Mär 2026', status:'bdone', statusText:'Erledigt', desc:'', photo:null },
+];
+var activeDetail = 0;
+
+// ── Navigation ─────────────────────────────────────────
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  var t=document.getElementById(id);
+  if(t) t.classList.add('on');
+}
+
+// ── Schritt 1 ──────────────────────────────────────────
+function fillChip(el){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('mangel-name').value = el.textContent;
+}
+
+function goR2(){
+  var name = document.getElementById('mangel-name').value.trim();
+  if(!name){
+    document.getElementById('mangel-name').style.borderColor='#A32D2D';
+    document.getElementById('mangel-name').placeholder='Bitte einen Namen eingeben …';
+    return;
+  }
+  state.name = name;
+  go('s-r2');
+}
+
+// ── Schritt 2 ──────────────────────────────────────────
+function selRoom(key){
+  var labels = {bad:'Badezimmer',kue:'Küche',wohn:'Wohnzimmer',schlaf:'Schlafzimmer',flur:'Flur'};
+  ['bad','kue','wohn','schlaf','flur'].forEach(k=>{
+    var el=document.getElementById('r-'+k);
+    if(el) el.classList.remove('sel');
+  });
+  var sel=document.getElementById('r-'+key);
+  if(sel) sel.classList.add('sel');
+  state.room    = labels[key] || key;
+  state.roomKey = key;
+}
+
+// ── Schritt 3 – echtes Foto ────────────────────────────
+function handlePhoto(input){
+  if(!input.files || !input.files[0]) return;
+  var file = input.files[0];
+  state.photo    = true;
+  state.photoName = file.name;
+  var sizeMB = (file.size/1024/1024).toFixed(1);
+  document.getElementById('photo-name').textContent = file.name + ' hinzugefügt';
+  document.getElementById('photo-size').textContent = sizeMB + ' MB';
+  var reader = new FileReader();
+  reader.onload = function(e){
+    state.photoDataUrl = e.target.result;
+    document.getElementById('photo-preview').src = e.target.result;
+    document.getElementById('upload-box').style.display='none';
+    document.getElementById('photo-added').style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Schritt 4 – Zusammenfassung befüllen ───────────────
+function goR4(){
+  document.getElementById('sum-name').textContent  = state.name  || '–';
+  document.getElementById('sum-room').textContent  = state.room  || '–';
+  document.getElementById('sum-photo').textContent = state.photo ? '1 Foto ✓' : 'Kein Foto';
+  go('s-r4');
+}
+
+// ── Senden → Liste + Detail + Home aktualisieren ───────
+function sendMangel(){
+  var desc = document.getElementById('mangel-desc').value.trim();
+  var today = new Date();
+  var months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  var datum = today.getDate() + '. ' + months[today.getMonth()] + ' ' + today.getFullYear();
+
+  var neuerMangel = {
+    name:       state.name,
+    room:       state.room,
+    datum:      datum,
+    status:     'bopen',
+    statusText: 'Offen',
+    desc:       desc,
+    photo:      state.photo ? state.photoDataUrl : null,
+  };
+
+  // Vorne einfügen
+  mangelList.unshift(neuerMangel);
+  activeDetail = 0;
+
+  // Listen-Screen neu rendern
+  renderList();
+
+  // Home: Offen-Zähler +1 und neue Karte oben
+  updateHome(neuerMangel, datum);
+
+  // Aufräumen für nächste Meldung
+  resetForm();
+
+  go('s-success');
+}
+
+function renderList(){
+  var container = document.getElementById('mangel-cards');
+  container.innerHTML = '';
+  mangelList.forEach(function(m, i){
+    var div = document.createElement('div');
+    div.className = 'card';
+    div.onclick = (function(idx){ return function(){ showDetail(idx); }; })(i);
+    div.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+        '<div><p style="font-weight:500;font-size:14px;color:#111;">'+m.name+'</p>' +
+        '<p style="font-size:12px;color:#888;margin-top:2px;">'+m.room+' · '+m.datum+'</p></div>' +
+        '<span class="'+m.status+'">'+m.statusText+'</span>' +
+      '</div>';
+    container.appendChild(div);
+  });
+}
+
+function updateHome(m, datum){
+  // Zähler
+  var offenEl = document.getElementById('home-offen');
+  if(offenEl) offenEl.textContent = parseInt(offenEl.textContent||0) + 1;
+
+  // Letzte Aktivität – neue Karte ganz oben einfügen
+  var activity = document.getElementById('home-activity');
+  if(activity){
+    var div = document.createElement('div');
+    div.className = 'card';
+    div.onclick = function(){ showDetail(0); go('s-detail'); };
+    div.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+        '<div><p style="font-weight:500;font-size:14px;color:#111;">'+m.name+'</p>' +
+        '<p style="font-size:12px;color:#888;margin-top:2px;">'+m.room+' · heute</p></div>' +
+        '<span class="bopen">Offen</span>' +
+      '</div>';
+    activity.insertBefore(div, activity.firstChild);
+  }
+}
+
+function showDetail(idx){
+  activeDetail = idx;
+  var m = mangelList[idx];
+  document.getElementById('detail-title').textContent  = m.name;
+  document.getElementById('detail-room').textContent   = m.room + ' · ' + m.datum;
+  document.getElementById('detail-status').className   = m.status;
+  document.getElementById('detail-status').textContent = m.statusText;
+  document.getElementById('detail-desc').textContent   = m.desc || '–';
+
+  var imgBox = document.getElementById('detail-photo');
+  if(m.photo){
+    imgBox.innerHTML = '<img src="'+m.photo+'" style="width:100%;height:140px;object-fit:cover;border-radius:14px;">';
+  } else {
+    imgBox.innerHTML = '<div style="width:100%;height:140px;background:#f8f8f8;border-radius:14px;display:flex;align-items:center;justify-content:center;"><svg width="38" height="38" fill="none" viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" stroke="#ccc" stroke-width="1.5"/><circle cx="12" cy="13" r="4" stroke="#ccc" stroke-width="1.5"/></svg></div>';
+  }
+  go('s-detail');
+}
+
+function resetForm(){
+  state = { name:'', room:'Badezimmer', roomKey:'bad', photo:false, photoName:'', photoDataUrl:'' };
+  document.getElementById('mangel-name').value = '';
+  document.getElementById('mangel-name').style.borderColor = '#0F6E56';
+  document.getElementById('mangel-desc').value = '';
+  document.getElementById('upload-box').style.display='block';
+  document.getElementById('photo-added').style.display='none';
+  document.getElementById('photo-preview').src='';
+  document.getElementById('photo-input').value='';
+  ['bad','kue','wohn','schlaf','flur'].forEach(k=>{
+    var el=document.getElementById('r-'+k);
+    if(el) el.classList.remove('sel');
+  });
+  document.getElementById('r-bad').classList.add('sel');
+  state.room='Badezimmer'; state.roomKey='bad';
+}
+
+// ── Init ───────────────────────────────────────────────
+renderList();
+
+// Home-Aktivität mit den ersten 2 Einträgen befüllen
+(function(){
+  var activity = document.getElementById('home-activity');
+  mangelList.slice(0,2).forEach(function(m, i){
+    var div = document.createElement('div');
+    div.className = 'card';
+    div.onclick = (function(idx){ return function(){ showDetail(idx); }; })(i);
+    div.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+        '<div><p style="font-weight:500;font-size:14px;color:#111;">'+m.name+'</p>' +
+        '<p style="font-size:12px;color:#888;margin-top:2px;">'+m.room+' · '+m.datum+'</p></div>' +
+        '<span class="'+m.status+'">'+m.statusText+'</span>' +
+      '</div>';
+    activity.appendChild(div);
+  });
+})();
+</script>
+</body>
+</html>

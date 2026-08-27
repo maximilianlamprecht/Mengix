@@ -1,0 +1,24 @@
+.bottom-nav {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  background: var(--card-bg);
+  border-top: 0.5px solid var(--border);
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+}
+
+.bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #bbb;
+  text-decoration: none;
+  font-size: 11px;
+}
+
+.bottom-nav__item--active {
+  color: var(--brand);
+}
