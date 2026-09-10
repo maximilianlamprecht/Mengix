@@ -11,6 +11,7 @@ function MangelMeldenLayout() {
     name: '',
     roomKey: 'bad',
     room: 'Badezimmer',
+    photoFile: null,
     photoDataUrl: null,
     photoName: '',
     desc: '',

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getMangelById } from '../services/mangelService';
 import StatusBadge from '../components/StatusBadge';
@@ -22,7 +23,26 @@ function BackButton({ onClick }) {
 function Detail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const mangel = getMangelById(id);
+  const [mangel, setMangel] = useState(undefined);
+
+  useEffect(() => {
+    setMangel(undefined);
+    getMangelById(id)
+      .then(setMangel)
+      .catch(() => setMangel(null));
+  }, [id]);
+
+  if (mangel === undefined) {
+    return (
+      <div className="detail">
+        <div className="detail__topbar">
+          <BackButton onClick={() => navigate('/maengel')} />
+          <p className="detail__topbar-title">Mangeldetails</p>
+        </div>
+        <p className="detail__not-found">Lädt …</p>
+      </div>
+    );
+  }
 
   if (!mangel) {
     return (

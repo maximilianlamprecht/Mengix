@@ -292,6 +292,11 @@
   color: var(--text);
 }
 
+.wizard-primary-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .wizard-primary-btn {
   background: var(--brand);
   color: #fff;

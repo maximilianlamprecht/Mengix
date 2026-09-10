@@ -17,6 +17,11 @@
   color: #bbb;
   text-decoration: none;
   font-size: 11px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
 }
 
 .bottom-nav__item--active {

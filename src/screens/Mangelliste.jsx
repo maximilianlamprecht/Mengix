@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMangelList } from '../services/mangelService';
 import MangelCard from '../components/MangelCard';
@@ -14,7 +14,16 @@ const FILTERS = [
 function Mangelliste() {
   const navigate = useNavigate();
   const [activeStatus, setActiveStatus] = useState(null);
-  const mangelList = getMangelList();
+  const [mangelList, setMangelList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getMangelList()
+      .then(setMangelList)
+      .catch(() => setMangelList([]))
+      .finally(() => setLoading(false));
+  }, []);
+
   const gefiltert = activeStatus
     ? mangelList.filter((mangel) => mangel.status === activeStatus)
     : mangelList;
@@ -36,7 +45,9 @@ function Mangelliste() {
         ))}
       </div>
 
-      {gefiltert.length === 0 ? (
+      {loading ? (
+        <p className="mangelliste__empty">Lädt …</p>
+      ) : gefiltert.length === 0 ? (
         <p className="mangelliste__empty">Keine Mängel in dieser Kategorie.</p>
       ) : (
         gefiltert.map((mangel) => (

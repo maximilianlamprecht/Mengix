@@ -1,6 +1,6 @@
-import { mangelList as initialMangelList } from '../data/mockData';
+import { supabase } from './supabaseClient';
 
-const STORAGE_KEY = 'mengix_mangel_list';
+const FOTO_BUCKET = 'mangel-fotos';
 
 const STATUS_LABELS = {
   bopen: 'Offen',
@@ -8,57 +8,83 @@ const STATUS_LABELS = {
   bdone: 'Erledigt',
 };
 
-function loadList() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return [...initialMangelList];
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return [...initialMangelList];
-  }
-}
-
-function saveList(list) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-}
-
 const MONATE = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
 
-function heutigesDatum() {
-  const heute = new Date();
-  return `${heute.getDate()}. ${MONATE[heute.getMonth()]} ${heute.getFullYear()}`;
+function formatDatum(date) {
+  return `${date.getDate()}. ${MONATE[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-export function getMangelList() {
-  return loadList();
-}
-
-export function getMangelById(id) {
-  return loadList().find((mangel) => mangel.id === id) ?? null;
-}
-
-export function createMangel(data) {
-  const list = loadList();
-  const neuerMangel = {
-    id: crypto.randomUUID(),
-    status: 'bopen',
-    statusText: STATUS_LABELS.bopen,
-    datum: heutigesDatum(),
-    desc: '',
-    photo: null,
-    ...data,
+function mapRow(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    room: row.room,
+    datum: formatDatum(new Date(row.created_at)),
+    status: row.status,
+    statusText: STATUS_LABELS[row.status] ?? row.status,
+    desc: row.description,
+    photo: row.photo_url,
   };
-  saveList([neuerMangel, ...list]);
-  return neuerMangel;
 }
 
-export function updateMangelStatus(id, status) {
-  const list = loadList();
-  const updatedList = list.map((mangel) =>
-    mangel.id === id
-      ? { ...mangel, status, statusText: STATUS_LABELS[status] ?? mangel.statusText }
-      : mangel
-  );
-  saveList(updatedList);
-  return updatedList.find((mangel) => mangel.id === id) ?? null;
+export async function getMangelList() {
+  const { data, error } = await supabase
+    .from('maengel')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data.map(mapRow);
+}
+
+export async function getMangelById(id) {
+  const { data, error } = await supabase.from('maengel').select('*').eq('id', id).maybeSingle();
+  if (error) throw error;
+  return data ? mapRow(data) : null;
+}
+
+async function uploadFoto(userId, file) {
+  const endung = file.name.includes('.') ? file.name.split('.').pop() : 'jpg';
+  const pfad = `${userId}/${crypto.randomUUID()}.${endung}`;
+
+  const { error } = await supabase.storage.from(FOTO_BUCKET).upload(pfad, file);
+  if (error) throw error;
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(FOTO_BUCKET).getPublicUrl(pfad);
+  return publicUrl;
+}
+
+export async function createMangel(data) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const photoUrl = data.photo ? await uploadFoto(user.id, data.photo) : null;
+
+  const { data: row, error } = await supabase
+    .from('maengel')
+    .insert({
+      user_id: user.id,
+      name: data.name,
+      room: data.room,
+      description: data.desc,
+      photo_url: photoUrl,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return mapRow(row);
+}
+
+export async function updateMangelStatus(id, status) {
+  const { data: row, error } = await supabase
+    .from('maengel')
+    .update({ status })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return mapRow(row);
 }

@@ -1,7 +1,15 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { signOut } from '../services/authService';
 import './BottomNav.css';
 
 function BottomNav() {
+  const navigate = useNavigate();
+
+  async function handleAbmelden() {
+    await signOut();
+    navigate('/login', { replace: true });
+  }
+
   return (
     <nav className="bottom-nav">
       <NavLink
@@ -31,6 +39,19 @@ function BottomNav() {
         </svg>
         <span>Mängel</span>
       </NavLink>
+
+      <button type="button" className="bottom-nav__item" onClick={handleAbmelden}>
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+          <path
+            d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span>Abmelden</span>
+      </button>
     </nav>
   );
 }

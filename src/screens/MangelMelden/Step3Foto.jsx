@@ -7,6 +7,7 @@ function Step3Foto() {
   const { meldung, setMeldung } = useOutletContext();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+  const [photoFile, setPhotoFile] = useState(meldung.photoFile);
   const [photoDataUrl, setPhotoDataUrl] = useState(meldung.photoDataUrl);
   const [photoName, setPhotoName] = useState(meldung.photoName);
   const [photoSizeMB, setPhotoSizeMB] = useState('');
@@ -22,6 +23,7 @@ function Step3Foto() {
       return;
     }
     setError('');
+    setPhotoFile(file);
     setPhotoName(file.name);
     setPhotoSizeMB(sizeMB.toFixed(1));
     const reader = new FileReader();
@@ -32,7 +34,7 @@ function Step3Foto() {
   }
 
   function handleWeiter() {
-    setMeldung((prev) => ({ ...prev, photoDataUrl, photoName }));
+    setMeldung((prev) => ({ ...prev, photoFile, photoDataUrl, photoName }));
     navigate('/melden/beschreibung');
   }
 

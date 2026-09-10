@@ -7,20 +7,29 @@ function Step4Beschreibung() {
   const navigate = useNavigate();
   const [desc, setDesc] = useState(meldung.desc);
   const [error, setError] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSenden() {
+  async function handleSenden() {
     const trimmed = desc.trim();
     if (!trimmed) {
       setError(true);
       return;
     }
-    const neuerMangel = createMangel({
-      name: meldung.name,
-      room: meldung.room,
-      desc: trimmed,
-      photo: meldung.photoDataUrl,
-    });
-    navigate('/erfolg', { state: { mangelId: neuerMangel.id } });
+    setSubmitError('');
+    setSubmitting(true);
+    try {
+      const neuerMangel = await createMangel({
+        name: meldung.name,
+        room: meldung.room,
+        desc: trimmed,
+        photo: meldung.photoFile,
+      });
+      navigate('/erfolg', { state: { mangelId: neuerMangel.id } });
+    } catch {
+      setSubmitError('Senden hat nicht geklappt. Bitte versuch es noch einmal.');
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -52,7 +61,7 @@ function Step4Beschreibung() {
         </div>
         <div className="wizard-summary-row">
           <span>Foto</span>
-          <span>{meldung.photoDataUrl ? '1 Foto ✓' : 'Kein Foto'}</span>
+          <span>{meldung.photoFile ? '1 Foto ✓' : 'Kein Foto'}</span>
         </div>
         <div className="wizard-summary-row">
           <span>Gesendet via</span>
@@ -60,8 +69,10 @@ function Step4Beschreibung() {
         </div>
       </div>
 
-      <button type="button" className="wizard-primary-btn" onClick={handleSenden}>
-        Mangel senden
+      {submitError && <p className="wizard-error-text">{submitError}</p>}
+
+      <button type="button" className="wizard-primary-btn" onClick={handleSenden} disabled={submitting}>
+        {submitting ? 'Wird gesendet …' : 'Mangel senden'}
       </button>
     </>
   );
