@@ -75,6 +75,13 @@ export async function createMangel(data) {
     .single();
 
   if (error) throw error;
+
+  // Löst die Vermieter-Benachrichtigung aus. Läuft bewusst im Hintergrund:
+  // Ein Fehler hier soll das Speichern des Mangels selbst nicht blockieren.
+  supabase.functions.invoke('send-mangel-email', { body: { record: row } }).catch((err) => {
+    console.error('E-Mail-Versand fehlgeschlagen:', err);
+  });
+
   return mapRow(row);
 }
 
